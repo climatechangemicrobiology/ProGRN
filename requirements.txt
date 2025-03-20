@@ -1,0 +1,10 @@
+igraph>=0.9.11
+numpy>=1.22.4
+pandas>=1.4.2
+pycairo>=1.21.0
+rpy2>=3.5.2
+streamlit
+streamlit-aggrid
+networkx
+pyvis
+stqdm
