@@ -1,0 +1,436 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+                <link href="lib/tom-select/tom-select.css" rel="stylesheet">
+                <script src="lib/tom-select/tom-select.complete.min.js"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 900px;
+                 height: 900px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 900px;
+                 height: 900px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+              <div id="filter-menu" class="card-header">
+                <div class="row no-gutters">
+                  <div class="col-3 pb-2">
+                    <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="updateFilter(value, 'item')"
+                            id="select-item"
+                        >
+                        <option value="">Select a network item</option>
+                        <option value="edge">edge</option>
+                        <option value="node">node</option>
+                    </select>
+                  </div>
+                  <div class="col-3 pb-2">
+                    <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            onchange="updateFilter(value, 'property')"
+                            id="select-property"
+                        >
+                        <option value="">Select a property...</option>
+                    </select>
+                  </div>
+                  <div class="col-3 pb-2">
+                    <select
+                            class="form-select"
+                            aria-label="Default select example"
+                            id="select-value"
+                        >
+                        <option value="">Select value(s)...</option>
+                    </select>
+                  </div>
+                  <div class="col-1 pb-2">
+                    <button type="button" class="btn btn-primary btn-block" onclick="highlightFilter(filter);">Filter</button>
+                  </div>
+                  <div class="col-2 pb-2">
+                    <button type="button" class="btn btn-primary btn-block" onclick="clearFilter(true)">Reset Selection</button>
+                  </div>
+                </div>
+              </div>
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+                  // explicitly using onItemAdd and this function as we need to save multiple values
+                  let updateValueFilter = function() {
+                      return function () {
+                      filter['value'].push(arguments[0])
+                      }
+                  }
+
+                  let valueControl = new TomSelect("#select-value",{
+                      maxItems: null,
+                      valueField: 'id',
+                      labelField: 'title',
+                      searchField: 'title',
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      },
+                      onItemAdd: updateValueFilter()
+                  });
+
+                  let addValues = function() {
+                      return function () {
+                          // clear the current value options and add the selected attribute values
+                          // tom-select handles duplicates
+                          let selectedProperty = arguments[0];
+                          valueControl.clear();
+                          valueControl.clearOptions();
+                          filter['value'] = []
+                          if (filter['item'] === 'node') {
+                              for (let each in allNodes) {
+                                  valueControl.addOption({
+                                      id:allNodes[each][selectedProperty],
+                                      title:allNodes[each][selectedProperty]
+                                  })
+                              }
+                          }
+                          else if (filter['item'] === 'edge') {
+                              for (let each in allEdges) {
+                                  valueControl.addOption({
+                                      id:allEdges[each][selectedProperty],
+                                      title:allEdges[each][selectedProperty]
+                                  })
+                              }
+                          }
+                      }
+                  };
+
+                  let propControl = new TomSelect("#select-property",{
+                      valueField: 'id',
+                      labelField: 'title',
+                      searchField: 'title',
+                      create: false,
+                      sortField: {
+                          field: "text",
+                          direction: "asc"
+                      },
+                      onItemAdd: addValues()
+                  });
+
+                  let addProperties = function() {
+                      return function () {
+                          // loops through the selected network item and adds the attributes to dropdown
+                          // tom-select handles duplicates
+                          clearFilter(false)
+                          if (arguments[0] === 'edge') {
+                              for (let each in allEdges) {
+                                  if (allEdges.hasOwnProperty(each)) {
+                                      for (let eachProp in allEdges[each]) {
+                                          if (allEdges[each].hasOwnProperty(eachProp)) {
+                                              propControl.addOption({id: eachProp, title: eachProp})
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                          else if (arguments[0] === 'node') {
+                              for (let each in allNodes) {
+                                  if (allNodes.hasOwnProperty(each)) {
+                                      for (let eachProp in allNodes[each]) {
+                                          if (allNodes[each].hasOwnProperty(eachProp)
+                                              && (eachProp !== 'hidden' && eachProp !== 'savedLabel'
+                                                  && eachProp !== 'hiddenLabel')) {
+                                              propControl.addOption({id: eachProp, title: eachProp})
+
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  };
+
+                  let itemControl = new TomSelect("#select-item",{
+                      create: false,
+                      sortField:{
+                          field: "text",
+                          direction: "asc"
+                      },
+                      onItemAdd: addProperties()
+                  });
+
+                  function clearFilter(reset) {
+                      // utility function to clear all the selected filter options
+                      // if reset is set to true, the existing filter will be removed
+                      // else, only the dropdown options are cleared
+                      propControl.clear();
+                      propControl.clearOptions();
+                      valueControl.clear();
+                      valueControl.clearOptions();
+                      filter = {
+                          item : '',
+                          property : '',
+                          value : []
+                      }
+                      if (reset) {
+                          itemControl.clear();
+                          filterHighlight({nodes: []})
+                      }
+                  }
+
+                  function updateFilter(value, key) {
+                      // key could be 'item' or 'property' and value is as selected in dropdown
+                      filter[key] = value
+                  }
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"borderWidth": 2, "color": "#D81B60", "font": {"color": "black"}, "id": "JT25_RS10875_SF", "label": "JT25_RS10875_SF", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS10875_SF"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS00085", "label": "JT25_RS00085", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS00085"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS08840", "label": "JT25_RS08840", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS08840"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS15065", "label": "JT25_RS15065", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS15065"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS15500", "label": "JT25_RS15500", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS15500"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS15720", "label": "JT25_RS15720", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS15720"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS15880", "label": "JT25_RS15880", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS15880"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS16045", "label": "JT25_RS16045", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS16045"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS16520", "label": "JT25_RS16520", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS16520"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS16790", "label": "JT25_RS16790", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS16790"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS23620", "label": "JT25_RS23620", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS23620"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS24540", "label": "JT25_RS24540", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS24540"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS24785", "label": "JT25_RS24785", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS24785"}, {"borderWidth": 2, "color": "#D81B60", "font": {"color": "black"}, "id": "JT25_RS12760_SF", "label": "JT25_RS12760_SF", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS12760_SF"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS00080", "label": "JT25_RS00080", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS00080"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS00115", "label": "JT25_RS00115", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS00115"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS03705", "label": "JT25_RS03705", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS03705"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS03710", "label": "JT25_RS03710", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS03710"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS08600", "label": "JT25_RS08600", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS08600"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS08625", "label": "JT25_RS08625", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS08625"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS08640", "label": "JT25_RS08640", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS08640"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS08645", "label": "JT25_RS08645", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS08645"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS08650", "label": "JT25_RS08650", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS08650"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS08655", "label": "JT25_RS08655", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS08655"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS08745", "label": "JT25_RS08745", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS08745"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS08775", "label": "JT25_RS08775", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS08775"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS14610", "label": "JT25_RS14610", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS14610"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS14615", "label": "JT25_RS14615", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS14615"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS14675", "label": "JT25_RS14675", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS14675"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS14810", "label": "JT25_RS14810", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS14810"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS14890", "label": "JT25_RS14890", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS14890"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS14900", "label": "JT25_RS14900", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS14900"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS14905", "label": "JT25_RS14905", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS14905"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS14910", "label": "JT25_RS14910", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS14910"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS14915", "label": "JT25_RS14915", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS14915"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS14920", "label": "JT25_RS14920", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS14920"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS14935", "label": "JT25_RS14935", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS14935"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS14980", "label": "JT25_RS14980", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS14980"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS15025", "label": "JT25_RS15025", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS15025"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS15030", "label": "JT25_RS15030", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS15030"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS15060", "label": "JT25_RS15060", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS15060"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS15080", "label": "JT25_RS15080", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS15080"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS15085", "label": "JT25_RS15085", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS15085"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS15405", "label": "JT25_RS15405", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS15405"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS15755", "label": "JT25_RS15755", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS15755"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS15760", "label": "JT25_RS15760", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS15760"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS15765", "label": "JT25_RS15765", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS15765"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS15770", "label": "JT25_RS15770", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS15770"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS15895", "label": "JT25_RS15895", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS15895"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS15910", "label": "JT25_RS15910", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS15910"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS15930", "label": "JT25_RS15930", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS15930"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS15945", "label": "JT25_RS15945", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS15945"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS15995", "label": "JT25_RS15995", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS15995"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS16165", "label": "JT25_RS16165", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS16165"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS16170", "label": "JT25_RS16170", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS16170"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS16175", "label": "JT25_RS16175", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS16175"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS16225", "label": "JT25_RS16225", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS16225"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS16375", "label": "JT25_RS16375", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS16375"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS16415", "label": "JT25_RS16415", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS16415"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS16485", "label": "JT25_RS16485", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS16485"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS16525", "label": "JT25_RS16525", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS16525"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS16860", "label": "JT25_RS16860", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS16860"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS16910", "label": "JT25_RS16910", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS16910"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS16940", "label": "JT25_RS16940", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS16940"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS19345", "label": "JT25_RS19345", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS19345"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS19370", "label": "JT25_RS19370", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS19370"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS19385", "label": "JT25_RS19385", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS19385"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS19410", "label": "JT25_RS19410", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS19410"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS19560", "label": "JT25_RS19560", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS19560"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS23245", "label": "JT25_RS23245", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS23245"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS23345", "label": "JT25_RS23345", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS23345"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS23375", "label": "JT25_RS23375", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS23375"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS23385", "label": "JT25_RS23385", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS23385"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS23395", "label": "JT25_RS23395", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS23395"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS23400", "label": "JT25_RS23400", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS23400"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS23425", "label": "JT25_RS23425", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS23425"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS24135", "label": "JT25_RS24135", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS24135"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS24370", "label": "JT25_RS24370", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS24370"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS24535", "label": "JT25_RS24535", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS24535"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS24555", "label": "JT25_RS24555", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS24555"}, {"borderWidth": 2, "color": "#D81B60", "font": {"color": "black"}, "id": "JT25_RS13005_SF", "label": "JT25_RS13005_SF", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS13005_SF"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS00075", "label": "JT25_RS00075", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS00075"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS03770", "label": "JT25_RS03770", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS03770"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS03785", "label": "JT25_RS03785", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS03785"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS08510", "label": "JT25_RS08510", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS08510"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS08515", "label": "JT25_RS08515", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS08515"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS08740", "label": "JT25_RS08740", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS08740"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS15690", "label": "JT25_RS15690", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS15690"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS16115", "label": "JT25_RS16115", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS16115"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS19520", "label": "JT25_RS19520", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS19520"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS23815", "label": "JT25_RS23815", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS23815"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS24775", "label": "JT25_RS24775", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS24775"}, {"borderWidth": 2, "color": "#D81B60", "font": {"color": "black"}, "id": "JT25_RS19490_SF", "label": "JT25_RS19490_SF", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS19490_SF"}, {"borderWidth": 2, "color": "#D81B60", "font": {"color": "black"}, "id": "JT25_RS18750_SF", "label": "JT25_RS18750_SF", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS18750_SF"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS08450", "label": "JT25_RS08450", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS08450"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS08615", "label": "JT25_RS08615", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS08615"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS14770", "label": "JT25_RS14770", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS14770"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS15355", "label": "JT25_RS15355", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS15355"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS16440", "label": "JT25_RS16440", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS16440"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS23420", "label": "JT25_RS23420", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS23420"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS00155", "label": "JT25_RS00155", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS00155"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS03740", "label": "JT25_RS03740", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS03740"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS03745", "label": "JT25_RS03745", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS03745"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS03815", "label": "JT25_RS03815", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS03815"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS03880", "label": "JT25_RS03880", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS03880"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS08710", "label": "JT25_RS08710", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS08710"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS08715", "label": "JT25_RS08715", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS08715"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS08890", "label": "JT25_RS08890", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS08890"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS14725", "label": "JT25_RS14725", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS14725"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS14735", "label": "JT25_RS14735", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS14735"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS14755", "label": "JT25_RS14755", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS14755"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS14765", "label": "JT25_RS14765", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS14765"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS14795", "label": "JT25_RS14795", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS14795"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS14820", "label": "JT25_RS14820", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS14820"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS14855", "label": "JT25_RS14855", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS14855"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS15295", "label": "JT25_RS15295", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS15295"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS15710", "label": "JT25_RS15710", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS15710"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS15730", "label": "JT25_RS15730", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS15730"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS15795", "label": "JT25_RS15795", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS15795"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS15810", "label": "JT25_RS15810", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS15810"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS15965", "label": "JT25_RS15965", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS15965"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS16120", "label": "JT25_RS16120", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS16120"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS16470", "label": "JT25_RS16470", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS16470"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS16490", "label": "JT25_RS16490", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS16490"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS16495", "label": "JT25_RS16495", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS16495"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS16730", "label": "JT25_RS16730", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS16730"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS16785", "label": "JT25_RS16785", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS16785"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS19240", "label": "JT25_RS19240", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS19240"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS23415", "label": "JT25_RS23415", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS23415"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS23515", "label": "JT25_RS23515", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS23515"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS23825", "label": "JT25_RS23825", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS23825"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS24070", "label": "JT25_RS24070", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS24070"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS24075", "label": "JT25_RS24075", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS24075"}, {"borderWidth": 2, "color": "#00BDFF", "font": {"color": "black"}, "id": "JT25_RS24765", "label": "JT25_RS24765", "opacity": 0.7, "shape": "dot", "size": 10, "title": "Locus tag: JT25_RS24765"}]);
+                  edges = new vis.DataSet([{"from": "JT25_RS10875_SF", "to": "JT25_RS00085", "width": 1}, {"from": "JT25_RS10875_SF", "to": "JT25_RS08840", "width": 1}, {"from": "JT25_RS10875_SF", "to": "JT25_RS15065", "width": 1}, {"from": "JT25_RS10875_SF", "to": "JT25_RS15500", "width": 1}, {"from": "JT25_RS10875_SF", "to": "JT25_RS15720", "width": 1}, {"from": "JT25_RS10875_SF", "to": "JT25_RS15880", "width": 1}, {"from": "JT25_RS10875_SF", "to": "JT25_RS16045", "width": 1}, {"from": "JT25_RS10875_SF", "to": "JT25_RS16520", "width": 1}, {"from": "JT25_RS10875_SF", "to": "JT25_RS16790", "width": 1}, {"from": "JT25_RS10875_SF", "to": "JT25_RS23620", "width": 1}, {"from": "JT25_RS10875_SF", "to": "JT25_RS24540", "width": 1}, {"from": "JT25_RS10875_SF", "to": "JT25_RS24785", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS00080", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS00115", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS03705", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS03710", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS08600", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS08625", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS08640", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS08645", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS08650", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS08655", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS08745", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS08775", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS14610", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS14615", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS14675", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS14810", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS14890", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS14900", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS14905", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS14910", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS14915", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS14920", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS14935", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS14980", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS15025", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS15030", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS15060", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS15080", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS15085", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS15405", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS15755", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS15760", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS15765", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS15770", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS15895", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS15910", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS15930", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS15945", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS15995", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS16165", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS16170", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS16175", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS16225", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS16375", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS16415", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS16485", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS16525", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS16860", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS16910", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS16940", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS19345", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS19370", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS19385", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS19410", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS19560", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS23245", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS23345", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS23375", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS23385", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS23395", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS23400", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS23425", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS24135", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS24370", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS24535", "width": 1}, {"from": "JT25_RS12760_SF", "to": "JT25_RS24555", "width": 1}, {"from": "JT25_RS13005_SF", "to": "JT25_RS00075", "width": 1}, {"from": "JT25_RS13005_SF", "to": "JT25_RS03770", "width": 1}, {"from": "JT25_RS13005_SF", "to": "JT25_RS03785", "width": 1}, {"from": "JT25_RS13005_SF", "to": "JT25_RS08510", "width": 1}, {"from": "JT25_RS13005_SF", "to": "JT25_RS08515", "width": 1}, {"from": "JT25_RS13005_SF", "to": "JT25_RS08740", "width": 1}, {"from": "JT25_RS13005_SF", "to": "JT25_RS15690", "width": 1}, {"from": "JT25_RS13005_SF", "to": "JT25_RS16115", "width": 1}, {"from": "JT25_RS13005_SF", "to": "JT25_RS19520", "width": 1}, {"from": "JT25_RS13005_SF", "to": "JT25_RS23815", "width": 1}, {"from": "JT25_RS13005_SF", "to": "JT25_RS24775", "width": 1}, {"from": "JT25_RS08515", "to": "JT25_RS19490_SF", "width": 1}, {"from": "JT25_RS23815", "to": "JT25_RS19490_SF", "width": 1}, {"from": "JT25_RS24775", "to": "JT25_RS19490_SF", "width": 1}, {"from": "JT25_RS18750_SF", "to": "JT25_RS08450", "width": 1}, {"from": "JT25_RS18750_SF", "to": "JT25_RS08615", "width": 1}, {"from": "JT25_RS18750_SF", "to": "JT25_RS14770", "width": 1}, {"from": "JT25_RS18750_SF", "to": "JT25_RS15355", "width": 1}, {"from": "JT25_RS18750_SF", "to": "JT25_RS16440", "width": 1}, {"from": "JT25_RS18750_SF", "to": "JT25_RS23420", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS00155", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS03740", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS03745", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS03815", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS03880", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS08710", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS08715", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS08890", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS14725", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS14735", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS14755", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS14765", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS14795", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS14820", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS14855", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS15295", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS15710", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS15730", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS15795", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS15810", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS15965", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS16120", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS16470", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS16490", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS16495", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS16730", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS16785", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS19240", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS23415", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS23515", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS23825", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS24070", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS24075", "width": 1}, {"from": "JT25_RS19490_SF", "to": "JT25_RS24765", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": true
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

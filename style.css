@@ -1,0 +1,11 @@
+[data-testid="stMetricValue"] {
+    font-size: 50px
+}
+#bootstrap-overrides div.card { 
+    border: 0px;
+}
+@media (max-width: 1200px) {
+    [data-testid='stHorizontalBlock'] div:nth-of-type(1) {
+        min-width: calc(100% - 1.5rem)
+    }
+}
